@@ -1,0 +1,54 @@
+to install Docker
+
+sudo apt update
+sudo apt install podman-docker
+
+
+to create the image
+
+requirements.txt
+
+pandas
+matplotlib
+openpyxl
+
+touch Dockerfile
+
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    python3-dev \
+    libfreetype6-dev \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY . .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+CMD ["python", "subnet_analyzer.py"]
+
+
+
+
+docker build -t subnet-analyzer .
+
+
+docker images
+
+
+podman save -o subnet-analyzer.tar subnet-analyzer
+
+
+
+docker load -i subnet-analyzer.tar
+
+
+podman run --rm subnet-analyzer
+
+podman run --rm -v "$(pwd)":/app subnet-analyzer:latest
+
+
